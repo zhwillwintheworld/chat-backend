@@ -17,6 +17,8 @@
     <module>chat-cache</module>
     <module>chat-conn</module>
     <module>chat-push</module>
+      <module>chat-config</module>
+      <module>chat-user-center</module>
   </modules>
 
   <properties>

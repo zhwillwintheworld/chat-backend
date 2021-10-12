@@ -22,13 +22,9 @@ public class WebsocketMessageContext {
      */
     private UserConnInfo connInfo;
     /**
-     * 链接id
-     */
-    private String handleId;
-    /**
      * websocket
      */
-    private ServerWebSocket socket;
+    private ServerWebSocket channel;
 
 
 }

@@ -23,23 +23,20 @@ public class WebsocketServerVerticle extends AbstractVerticle {
         HttpServer server = vertx.createHttpServer(options);
         RedisConnHolder.init(vertx);
         server.webSocketHandler(serverWebSocket -> {
-            // 接收到消息
-            String handleId = serverWebSocket.textHandlerID();
-            System.out.println(handleId+"接入");
+            System.out.println("连接成功"+serverWebSocket.binaryHandlerID());
             serverWebSocket.handler(buffer -> {
                 try{
                     Chat.ChatMessage message = Chat.ChatMessage.parseFrom(buffer.getBytes());
-                    WebsocketMessageContext messageContext = new WebsocketMessageContext(message,null,handleId,serverWebSocket);
+                    WebsocketMessageContext messageContext = new WebsocketMessageContext(message,null,serverWebSocket);
                     BaseChatProcessor processor = BaseChatProcessor.getInstance();
                     processor.doProcess(messageContext);
                 }catch (InvalidProtocolBufferException e){
                     serverWebSocket.close();
-                    System.out.println(handleId+"协议出错");
                 }
             });
             // 关闭链接
             serverWebSocket.closeHandler(k->{
-                System.out.println(handleId+"链接断开");
+                System.out.println("链接断开");
             });
 
         });

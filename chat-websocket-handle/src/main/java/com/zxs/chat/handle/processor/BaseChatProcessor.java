@@ -24,18 +24,25 @@ public class BaseChatProcessor implements ChatProcess {
     @Override
     public void doProcess(WebsocketMessageContext context) {
         // 校验是否登录
-        boolean login = ChatUserCacheHolder.containConn(context.getHandleId());
+        String channelId = context.getChannel().binaryHandlerID();
+        boolean login = ChatUserCacheHolder.containConn(channelId);
         Chat.ChatMessage message = context.getMessage();
         Chat.HeadType headType= message.getHeadType();
         if(login){
-            context.setConnInfo(ChatUserCacheHolder.getUserInfo(context.getHandleId()));
+            context.setConnInfo(ChatUserCacheHolder.getUserInfo(channelId));
         }else{
             if(!Chat.HeadType.LOGIN_REQUEST.equals(headType)){
-                Chat.Response.Builder builder = Chat.Response.newBuilder();
-                builder.setResponseType(Chat.ResponseType.LOGIN_VALUE);
-                builder.setCode(ResponseCode.UN_LOGIN.getCode());
-                builder.setSuccess(false);
-                context.getSocket().writeBinaryMessage(Buffer.buffer(builder.build().toByteArray()));
+                Chat.Response response = Chat.Response.newBuilder()
+                        .setResponseType(Chat.ResponseType.LOGIN_VALUE)
+                        .setCode(ResponseCode.UN_LOGIN.getCode())
+                        .setSuccess(false)
+                        .build();
+                Chat.ChatMessage chatMessage = Chat.ChatMessage.newBuilder()
+                        .setHeadType(Chat.HeadType.RESPONSE)
+                        .setResponse(response)
+                        .setSeq(context.getMessage().getSeq())
+                        .build();
+                context.getChannel().writeBinaryMessage(Buffer.buffer(chatMessage.toByteArray()));
                 return;
             }
         }
