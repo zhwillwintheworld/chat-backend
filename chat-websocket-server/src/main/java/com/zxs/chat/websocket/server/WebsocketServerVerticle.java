@@ -3,7 +3,6 @@ package com.zxs.chat.websocket.server;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.zxs.chat.common.context.WebsocketMessageContext;
 import com.zxs.chat.common.domain.Chat;
-import com.zxs.chat.conn.redis.RedisConnHolder;
 import com.zxs.chat.handle.processor.BaseChatProcessor;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
@@ -19,9 +18,17 @@ public class WebsocketServerVerticle extends AbstractVerticle {
 
     @Override
     public void start(Promise<Void> startPromise) throws Exception {
+
+        // 向注册中心注册
+//        ServiceDiscovery.create(vertx, new ServiceDiscoveryOptions()
+//                .setBackendConfiguration(
+//                        new JsonObject()
+//                                .put("connectionString", "redis://wsy520@localhost:6379/0")
+//                                .put("key", "records")
+//                ));
+        // 创建websocket服务
         HttpServerOptions options = new HttpServerOptions().setMaxWebSocketFrameSize(1000000);
         HttpServer server = vertx.createHttpServer(options);
-        RedisConnHolder.init(vertx);
         server.webSocketHandler(serverWebSocket -> {
             System.out.println("连接成功"+serverWebSocket.binaryHandlerID());
             serverWebSocket.handler(buffer -> {
@@ -42,7 +49,8 @@ public class WebsocketServerVerticle extends AbstractVerticle {
         });
         server.listen(8889);
         startPromise.complete();
-        System.out.println("启动成功");
+        System.out.println("websocket连接服务启动成功");
+
 
 
 
