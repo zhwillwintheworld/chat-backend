@@ -27,6 +27,7 @@ public class MysqlConnHolder {
                 .setMaxSize(5);
         // Create the pooled client
         client = MySQLPool.pool(vertx, connectOptions, poolOptions);
+        System.out.println("mysql连接成功");
     }
 
     public static MySQLPool getClient(){

@@ -19,6 +19,7 @@
     <module>chat-push</module>
       <module>chat-config</module>
       <module>chat-user-center</module>
+      <module>chat-bean</module>
   </modules>
 
   <properties>
@@ -43,6 +44,11 @@
       <dependency>
         <groupId>com.zxs</groupId>
         <artifactId>chat-common</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.zxs</groupId>
+        <artifactId>chat-bean</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
