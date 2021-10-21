@@ -18,7 +18,6 @@ public class WebVerticle extends AbstractVerticle {
         MysqlConnHolder.init(vertx);
         RedisConnHolder.init(vertx);
         RouterHolder.init(vertx);
-        RouterHolder.start();
         server.requestHandler(RouterHolder.getRouter()).listen(8888);
         this.start();
         startPromise.complete();

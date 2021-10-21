@@ -1,6 +1,5 @@
 package com.zxs.chat.web.service;
 
-import com.zxs.chat.bean.user.UserBase;
 import com.zxs.chat.common.enums.ResponseCode;
 import com.zxs.chat.common.exception.BizException;
 import com.zxs.chat.conn.mysql.MysqlConnHolder;
@@ -21,7 +20,6 @@ public class UserService {
         return  service;
     }
     public void login(RoutingContext ctx){
-
         JsonObject body = ctx.getBodyAsJson();
         String userName = body.getString("userName");
         String password = body.getString("password");
@@ -31,24 +29,17 @@ public class UserService {
         if(password==null){
             throw new BizException(ResponseCode.PARAM_WRONG,"密码不能为空");
         }
-        MysqlConnHolder.getClient().getConnection()
-                .compose(conn-> UserBaseDao.getInstance().getUserByUserName(conn,userName))
-                .onComplete(ar -> {
-                    if(ar.succeeded()){
-                        UserBase userBase = ar.result();
-                        if(userBase==null){
-                            ctx.fail(new BizException(ResponseCode.USER_NOT_EXIST));
-                        }
-                        if(!userBase.getPassword().equals(password)){
-                            ctx.fail(new BizException(ResponseCode.PASSWORD_WRONG));
-                        }
-                        String token = "123456";
-                        JsonObject res = new JsonObject();
-                        res.put("token",token);
-                        ctx.json(res);
+        MysqlConnHolder.getClient()
+                .getConnection()
+                .compose(conn-> UserBaseDao.getInstance().getUserByUserName(conn,userName).eventually(k->conn.close()))
+                .onSuccess(ar -> {
+                    if(ar==null){
+                        ctx.fail(new BizException(ResponseCode.USER_NOT_EXIST));
+                    }else if(!ar.getPassword().equals(password)){
+                        ctx.fail(new BizException(ResponseCode.PASSWORD_WRONG));
+                    }else{
+                        ctx.json(new JsonObject().put("token","wsl yyds"));
                     }
                 });
-
-
     }
 }

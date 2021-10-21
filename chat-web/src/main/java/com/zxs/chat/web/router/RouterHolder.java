@@ -7,6 +7,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.Route;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
+import io.vertx.ext.web.handler.TimeoutHandler;
 
 /**
  * @author zhanghua
@@ -14,37 +15,29 @@ import io.vertx.ext.web.handler.BodyHandler;
  */
 public class RouterHolder {
     private static Router router;
-    private static Route route;
     public static void init(Vertx vertx){
         router = Router.router(vertx);
-        route = router.route();
-    }
-    public static void start(){
-        route.handler(BodyHandler.create());
+        Route route = router.route();
+        route.handler(BodyHandler.create())
+                .handler(TimeoutHandler.create(5000))
+                .consumes("application/json")
+                .produces("application/json");
         UserController.init();
-        route.consumes("application/json")
-                .produces("application/json")
-                .failureHandler(ctx->{
-                    Throwable t = ctx.failure();
-                    JsonObject res = new JsonObject();
-                    res.put("code",500);
-                    res.put("msg",t.getMessage());
-                    if(t instanceof BizException){
-                        res.put("code",((BizException) t).getCode());
-                    }
-                    ctx.json(res);
-                });
-
-
-
-
-
+        router.errorHandler(500,ctx->{
+            Throwable t = ctx.failure();
+            t.printStackTrace();
+            JsonObject json = new JsonObject();
+            json.put("code",500);
+            json.put("msg","内部服务错误");
+            if(t instanceof BizException){
+                json.put("code",((BizException) t).getCode());
+                json.put("msg",t.getMessage());
+            }
+            ctx.json(json);
+        });
     }
+
     public static Router getRouter(){
         return router;
     }
-    public static Route getRoute(){
-        return  route;
-    }
-
 }
