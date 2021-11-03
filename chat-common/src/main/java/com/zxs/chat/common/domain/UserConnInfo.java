@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
  * @date 2021/10/8 16:17
  */
 @Data
-public class UserConnInfo {
+public class
+UserConnInfo {
     private String token;
     private String location;
     private String workId;

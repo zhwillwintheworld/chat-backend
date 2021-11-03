@@ -12,10 +12,13 @@ public enum ResponseCode implements BaseEnum {
     // 描述
     // 基础错误
     PARAM_WRONG(105,"参数错误"),
-    //
+    //socket相关
     UN_LOGIN(1001,"未登录"),
-    USER_NOT_EXIST(1002,"用户不存在"),
-    PASSWORD_WRONG(1003,"密码错误"),
+    MISSING_LOGIN_REQUEST_BODY(1002,"缺少登录请求体"),
+    // web相关
+    USER_NOT_EXIST(2001,"用户不存在"),
+    PASSWORD_WRONG(2002,"密码错误"),
+
     ;
     private final int code;
     private final String desc;

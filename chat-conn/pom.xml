@@ -18,6 +18,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.zxs</groupId>
+            <artifactId>chat-common</artifactId>
+        </dependency>
+        <dependency>
             <groupId>io.vertx</groupId>
             <artifactId>vertx-redis-client</artifactId>
         </dependency>

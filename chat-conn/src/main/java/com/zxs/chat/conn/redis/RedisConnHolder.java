@@ -20,7 +20,9 @@ public class RedisConnHolder {
 
     public static void init(Vertx holder) {
         vertx = holder;
-        OPTIONS.setConnectionString("redis://wsy520@127.0.0.1:6379/1");
+        OPTIONS.setConnectionString("redis://wsy520@127.0.0.1:6379/1")
+                .setMaxPoolSize(2)
+                .setMaxWaitingHandlers(32);
         createRedisClient()
                 .onSuccess(conn -> {
                     client = conn;
