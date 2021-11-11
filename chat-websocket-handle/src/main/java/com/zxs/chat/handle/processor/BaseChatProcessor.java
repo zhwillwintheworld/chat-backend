@@ -11,7 +11,7 @@ import io.vertx.core.buffer.Buffer;
  * @author zhanghua
  * @date 2021/10/8 16:38
  */
-public class BaseChatProcessor implements ChatProcess {
+public class BaseChatProcessor implements ChatProcess{
     private static BaseChatProcessor instance;
 
     public static BaseChatProcessor getInstance(){
@@ -24,7 +24,7 @@ public class BaseChatProcessor implements ChatProcess {
     @Override
     public void doProcess(WebsocketMessageContext context) {
         // 校验是否登录
-        String channelId = context.getChannel().binaryHandlerID();
+        String channelId = context.getChannel().textHandlerID();
         boolean login = ChatUserCacheHolder.containConn(channelId);
         Chat.ChatMessage message = context.getMessage();
         Chat.HeadType headType= message.getHeadType();
@@ -43,7 +43,7 @@ public class BaseChatProcessor implements ChatProcess {
                         .setSeq(context.getMessage().getSeq())
                         .build();
                 context.getChannel().writeBinaryMessage(Buffer.buffer(chatMessage.toByteArray()));
-                return;
+                return ;
             }
         }
         switch (headType){

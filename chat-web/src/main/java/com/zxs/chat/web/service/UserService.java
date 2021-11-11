@@ -1,6 +1,7 @@
 package com.zxs.chat.web.service;
 
 import com.zxs.chat.bean.user.UserBase;
+import com.zxs.chat.common.domain.Result;
 import com.zxs.chat.common.enums.ResponseCode;
 import com.zxs.chat.common.exception.BizException;
 import com.zxs.chat.common.util.Md5Util;
@@ -44,7 +45,7 @@ public class UserService {
                 .getConnection()
                 .compose(conn-> UserBaseDao.getInstance().getUserByUserName(conn,userName).eventually(k->conn.close()))
                 .compose(ar -> validAndGetToken(ar,password,platform))
-                .onSuccess(t->ctx.json(new JsonObject().put("token",t)))
+                .onSuccess(t->ctx.json(Result.ok(t)))
                 .onFailure(ctx::fail);
     }
 

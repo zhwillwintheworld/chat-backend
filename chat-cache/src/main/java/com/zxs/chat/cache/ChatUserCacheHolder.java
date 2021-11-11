@@ -23,6 +23,10 @@ public class ChatUserCacheHolder {
         return getInfo().containsKey(handleId);
     }
 
+    public static void setUserInfo(String handleId,UserConnInfo connInfo){
+        getInfo().put(handleId,connInfo);
+    }
+
     public static UserConnInfo getUserInfo(String handleId){
         return getInfo().get(handleId);
     }

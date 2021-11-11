@@ -3,6 +3,8 @@ package com.zxs.chat.websocket.server;
 import com.google.protobuf.InvalidProtocolBufferException;
 import com.zxs.chat.common.context.WebsocketMessageContext;
 import com.zxs.chat.common.domain.Chat;
+import com.zxs.chat.conn.mysql.MysqlConnHolder;
+import com.zxs.chat.conn.redis.RedisConnHolder;
 import com.zxs.chat.handle.processor.BaseChatProcessor;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
@@ -27,6 +29,8 @@ public class WebsocketServerVerticle extends AbstractVerticle {
 //                                .put("key", "records")
 //                ));
         // 创建websocket服务
+        RedisConnHolder.init(vertx);
+        MysqlConnHolder.init(vertx);
         HttpServerOptions options = new HttpServerOptions().setMaxWebSocketFrameSize(1000000);
         HttpServer server = vertx.createHttpServer(options);
         server.webSocketHandler(serverWebSocket -> {
@@ -42,9 +46,7 @@ public class WebsocketServerVerticle extends AbstractVerticle {
                 }
             });
             // 关闭链接
-            serverWebSocket.closeHandler(k->{
-                System.out.println("链接断开");
-            });
+            serverWebSocket.closeHandler(k-> System.out.println("链接断开"));
 
         });
         server.listen(8889);
